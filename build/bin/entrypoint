@@ -20,7 +20,7 @@
 
 if ! whoami &>/dev/null; then
   if [ -w /etc/passwd ]; then
-    echo "${USER_NAME:-integration-operator}:x:$(id -u):$(id -g):${USER_NAME:-integration-operator} user:${HOME}:/sbin/nologin" >> /etc/passwd
+    echo "${USER_NAME:-k8s-ei-operator}:x:$(id -u):$(id -g):${USER_NAME:-k8s-ei-operator} user:${HOME}:/sbin/nologin" >> /etc/passwd
   fi
 fi
 

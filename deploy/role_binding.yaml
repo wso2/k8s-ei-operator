@@ -17,11 +17,11 @@
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: integration-operator
+  name: k8s-ei-operator
 subjects:
 - kind: ServiceAccount
-  name: integration-operator
+  name: k8s-ei-operator
 roleRef:
   kind: Role
-  name: integration-operator
+  name: k8s-ei-operator
   apiGroup: rbac.authorization.k8s.io

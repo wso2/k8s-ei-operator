@@ -17,24 +17,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: integration-operator
+  name: k8s-ei-operator
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: integration-operator
+      name: k8s-ei-operator
   template:
     metadata:
       labels:
-        name: integration-operator
+        name: k8s-ei-operator
     spec:
-      serviceAccountName: integration-operator
+      serviceAccountName: k8s-ei-operator
       containers:
-        - name: integration-operator
+        - name: k8s-ei-operator
           # Replace this with the built image name
-          image: REPLACE_IMAGE
+          image: wso2/k8s-ei-operator:1.0.0
           command:
-          - integration-operator
+          - k8s-ei-operator
           imagePullPolicy: Always
           env:
             - name: WATCH_NAMESPACE
@@ -46,4 +46,4 @@ spec:
                 fieldRef:
                   fieldPath: metadata.name
             - name: OPERATOR_NAME
-              value: "integration-operator"
+              value: "k8s-ei-operator"
