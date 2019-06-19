@@ -16,6 +16,52 @@ The k8s-ei-operator built with operator-sdk v0.7.0 and supported in the followin
 * Kubernetes cluster and client v1.11+
 
 ## Install k8s-ei-operator
+
+### Standard mode
+1. Create the folder structure `$GOPATH/src/github.com/wso2` if not available and clone k8s-ei-operator git repo
+        ```
+        git clone https://github.com/wso2/k8s-ei-operator.git
+        ```
+2. Change directory to k8s-ei-operator
+        ```
+        cd $GOPATH/src/github.com/wso2/wso2/k8s-ei-operator
+        ```
+3. Setup Service Account
+        ```
+        kubectl create -f deploy/service_account.yaml
+        ```
+4. Setup RBAC
+        ```
+        kubectl create -f deploy/role.yaml
+        kubectl create -f deploy/role_binding.yaml
+        ```
+5. Deploy integration CustomResourceDefinition into Kubernetes cluster to understand custom resource type
+        ```
+        kubectl create -f deploy/crds/integration_v1alpha1_integration_crd.yaml
+        ```
+6. Deploy the k8s-ei-operator
+        ```
+        kubectl create -f deploy/operator.yaml
+        ```
+7. Deploy sample integration to start WSO2 micro integrator runtime which having 'Hello World' proxy service
+        ```
+        kubectl apply -f deploy/crds/hello_world_integration.yaml
+        ```
+8. List the deployed integration
+        ```
+        kubectl get integration
+        ```
+9. Invoke the Hello World service once STATUS becomes **Running**
+
+        i. Port forward
+        ```
+        kubectl port-forward service/hello-world-service 8290:8290
+        ```
+        ii. Invoke the API
+        ```
+        curl http://localhost:8290/services/HelloWorld
+        ```
+ 
 ### Development mode
 1. Check out and install the [operator-sdk CLI](https://github.com/operator-framework/operator-sdk#quick-start)
 2. Install [minikube](https://github.com/kubernetes/minikube#installation) and start Kubernetes cluster
