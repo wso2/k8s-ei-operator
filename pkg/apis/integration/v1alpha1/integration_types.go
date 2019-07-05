@@ -19,6 +19,7 @@
 package v1alpha1
 
 import (
+	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -34,6 +35,8 @@ type IntegrationSpec struct {
 	Image string `json:"image"`
 	// HTTP traffic serving port of the micro integrator runtime
 	Port int32 `json:"port"`
+	// List of environment variables to set for the integration.
+	Env []corev1.EnvVar `json:"env,omitempty"`
 }
 
 // IntegrationStatus defines the observed state of Integration

@@ -20,5 +20,8 @@ metadata:
   name: hello-world
 spec:
   replicas: 1
-  image: indikasampath2000/wso2-mi-hello-world
+  image: sanojp/mi:v8
   port: 8290
+  env:
+    - name: DEMO_GREETING
+      value: "Hello_from_the_mi"

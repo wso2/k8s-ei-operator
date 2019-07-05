@@ -238,6 +238,7 @@ func (r *ReconcileIntegration) deploymentForIntegration(m *integrationv1alpha1.I
 						Ports: []corev1.ContainerPort{{
 							ContainerPort: 8290,
 						}},
+						Env: m.Spec.Env,
 					}},
 				},
 			},
