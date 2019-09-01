@@ -43,22 +43,23 @@ The k8s-ei-operator built with operator-sdk v0.7.0 and supported in the followin
     ```
     kubectl create -f deploy/operator.yaml
     ```
-7. Deploy sample integration to start WSO2 micro integrator runtime which having 'Hello World' proxy service
+7. Deploy sample integration to start WSO2 micro integrator runtime which having 'User Info' API
     ```
-    kubectl apply -f deploy/crds/hello_world_integration.yaml
+    kubectl apply -f deploy/crds/user_mgt_demo_integration.yaml
     ```
 8. List the deployed integration
     ```
     kubectl get integration
     ```
-9. Invoke the Hello World service once STATUS becomes **Running**
+9. Invoke the User Info API once STATUS becomes **Running**
+
     i. Port forward
     ```
-    kubectl port-forward service/hello-world-service 8290:8290
+    kubectl port-forward service/user-mgt-demo-integration-service 8290:8290
     ```
     ii. Invoke the API
     ```
-    curl http://localhost:8290/services/HelloWorld
+    curl http://localhost:8290/userInfo/users
     ```
  
 ### Development mode
@@ -80,23 +81,23 @@ The k8s-ei-operator built with operator-sdk v0.7.0 and supported in the followin
 	```
 	operator-sdk up local
 	```
-7. Deploy sample integration to start WSO2 micro integrator runtime which having 'Hello World' proxy service
+7. Deploy sample integration to start WSO2 micro integrator runtime which having 'User Info' API
 	```
-	kubectl apply -f deploy/crds/hello_world_integration.yaml
+	kubectl apply -f deploy/crds/user_mgt_demo_integration.yaml
 	```
 8. List the deployed integration
 	```
 	kubectl get integration
 	```
-9. Invoke the Hello World service once STATUS becomes **Running**
+9. Invoke the User Info API once STATUS becomes **Running**
 
 	i. Port forward
 	```
-	kubectl port-forward service/hello-world-service 8290:8290
+	kubectl port-forward service/er-mgt-demo-integration-service 8290:8290
 	```
 	ii. Invoke the API
 	```
-	curl http://localhost:8290/services/HelloWorld
+	curl http://localhost:8290/services/userInfo/users
 	```
 
 ## Developer Workflow
