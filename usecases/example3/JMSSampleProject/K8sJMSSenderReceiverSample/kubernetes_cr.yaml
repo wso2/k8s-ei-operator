@@ -1,0 +1,22 @@
+---
+apiVersion: "integration.wso2.com/v1alpha1"
+kind: "Integration"
+metadata:
+  name: "jms"
+spec:
+  replicas: 1
+  image: "sajithaliyanage/k8s-samples:jms-activemq"
+  port: 8290
+  env:
+           - name: "jmsconfac"
+             value: "TopicConnectionFactory"
+           - name: "jmsuname"
+             value: "admin"
+           - name: "destination"
+             value: "queue"
+           - name: "jmsurl"
+             value: "tcp://localhost:61616"
+           - name: "jmspass"
+             value: "admin"
+           - name: "contenttype"
+             value: "application/xml"
