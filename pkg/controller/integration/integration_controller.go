@@ -232,14 +232,17 @@ func (r *ReconcileIntegration) deploymentForIntegration(m *integrationv1alpha1.I
 					Labels: labels,
 				},
 				Spec: corev1.PodSpec{
-					Containers: []corev1.Container{{
-						Image: m.Spec.Image,
-						Name:  "micro-integrator",
-						Ports: []corev1.ContainerPort{{
-							ContainerPort: 8290,
-						}},
-						Env: m.Spec.Env,
-					}},
+					Containers: []corev1.Container{
+						corev1.Container{
+							Image: m.Spec.Image,
+							Name:  "micro-integrator",
+							Ports: []corev1.ContainerPort{{
+								ContainerPort: 8290,
+							}},
+							Env:             m.Spec.Env,
+							ImagePullPolicy: corev1.PullAlways,
+						},
+					},
 				},
 			},
 		},
