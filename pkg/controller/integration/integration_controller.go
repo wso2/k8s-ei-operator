@@ -26,14 +26,13 @@ import (
 
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
+	v1beta1 "k8s.io/api/extensions/v1beta1"
 	"k8s.io/apimachinery/pkg/api/errors"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/apimachinery/pkg/util/intstr"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller"
-	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/handler"
 	"sigs.k8s.io/controller-runtime/pkg/manager"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
@@ -42,6 +41,13 @@ import (
 )
 
 var log = logf.Log.WithName("controller_integration")
+
+//define type const
+const (
+	//define type Int and String
+	Int intstr.Type = iota
+	String
+)
 
 /**
 * USER ACTION REQUIRED: This is a scaffold file intended for the user to modify with their own Controller
@@ -179,6 +185,42 @@ func (r *ReconcileIntegration) Reconcile(request reconcile.Request) (reconcile.R
 		return reconcile.Result{}, err
 	}
 
+	// Check if the ingress already exists, if not create a new one, if yes update it
+	eiController := r.UpdateDefaultConfigs(integration)
+	if eiController.AutoCreateIngress != false {
+		ingress := &v1beta1.Ingress{}
+		err = r.client.Get(context.TODO(), types.NamespacedName{Name: nameForIngress(), Namespace: integration.Namespace}, ingress)
+		if err != nil && errors.IsNotFound(err) {
+			// Define a new Ingress
+			eiIngress := r.ingressForIntegration(integration, &eiController)
+			reqLogger.Info("Creating a new Ingress", "Ingress.Namespace", integration.Namespace, "Ingress.Name", nameForIngress())
+			err = r.client.Create(context.TODO(), eiIngress)
+			if err != nil {
+				reqLogger.Error(err, "Failed to create new Ingress", "Ingress.Namespace", integration.Namespace, "Ingress.Name", nameForIngress())
+				return reconcile.Result{}, err
+			}
+			// Ingress created successfully - return and requeue
+			reqLogger.Info("Ingress created successfully")
+
+		} else if err == nil {
+			_, ruleExists := CheckIngressRulesExist(integration, &eiController, ingress)
+			if !ruleExists {
+				eiIngress := r.updateIngressForIntegration(integration, &eiController, ingress)
+				reqLogger.Info("Updating a new Ingress", "Ingress.Namespace", integration.Namespace, "Ingress.Name", nameForIngress())
+				err = r.client.Update(context.TODO(), eiIngress)
+				if err != nil {
+					reqLogger.Error(err, "Failed to updated new Ingress", "Ingress.Namespace", integration.Namespace, "Ingress.Name", nameForIngress())
+					return reconcile.Result{}, err
+				}
+				// Ingress updated successfully - return and requeue
+				reqLogger.Info("Ingress updated successfully")
+			}
+		} else if err != nil {
+			reqLogger.Error(err, "Failed to get Ingress")
+			return reconcile.Result{}, err
+		}
+	}
+
 	// Update status.Status if needed
 	availableReplicas := deploymentObj.Status.AvailableReplicas
 	currentStatus := "NotRunning"
@@ -205,86 +247,5 @@ func (r *ReconcileIntegration) Reconcile(request reconcile.Request) (reconcile.R
 		}
 	}
 
-	return reconcile.Result{}, nil
-}
-
-// deploymentForIntegration returns a integration Deployment object
-func (r *ReconcileIntegration) deploymentForIntegration(m *integrationv1alpha1.Integration) *appsv1.Deployment {
-	labels := labelsForIntegration(m.Name)
-	replicas := m.Spec.Replicas
-
-	deployment := &appsv1.Deployment{
-		TypeMeta: metav1.TypeMeta{
-			APIVersion: "apps/v1",
-			Kind:       "Deployment",
-		},
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      nameForDeployment(m),
-			Namespace: m.Namespace,
-		},
-		Spec: appsv1.DeploymentSpec{
-			Replicas: &replicas,
-			Selector: &metav1.LabelSelector{
-				MatchLabels: labels,
-			},
-			Template: corev1.PodTemplateSpec{
-				ObjectMeta: metav1.ObjectMeta{
-					Labels: labels,
-				},
-				Spec: corev1.PodSpec{
-					Containers: []corev1.Container{{
-						Image: m.Spec.Image,
-						Name:  "micro-integrator",
-						Ports: []corev1.ContainerPort{{
-							ContainerPort: 8290,
-						}},
-						Env: m.Spec.Env,
-					}},
-				},
-			},
-		},
-	}
-	// Set Integration instance as the owner and controller
-	controllerutil.SetControllerReference(m, deployment, r.scheme)
-	return deployment
-}
-
-// serviceForIntegration returns a service object
-func (r *ReconcileIntegration) serviceForIntegration(m *integrationv1alpha1.Integration) *corev1.Service {
-	labels := labelsForIntegration(m.Name)
-
-	service := &corev1.Service{
-		TypeMeta: metav1.TypeMeta{
-			APIVersion: "apps/v1",
-			Kind:       "Service",
-		},
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      nameForService(m),
-			Namespace: m.Namespace,
-		},
-		Spec: corev1.ServiceSpec{
-			Selector: labels,
-			Ports: []corev1.ServicePort{{
-				Port:       m.Spec.Port,
-				TargetPort: intstr.FromInt(8290),
-			}},
-		},
-	}
-	// Set Integration instance as the owner and controller
-	controllerutil.SetControllerReference(m, service, r.scheme)
-	return service
-}
-
-// labelsForIntegration returns the labels for selecting the resources
-// belonging to the given integration CR name.
-func labelsForIntegration(name string) map[string]string {
-	return map[string]string{"app": "integration", "integration_cr": name}
-}
-
-func nameForDeployment(m *integrationv1alpha1.Integration) string {
-	return m.Name + "-deployment"
-}
-
-func nameForService(m *integrationv1alpha1.Integration) string {
-	return m.Name + "-service"
+	return reconcile.Result{Requeue: true}, nil
 }

@@ -25,6 +25,8 @@ spec:
     listKind: IntegrationList
     plural: integrations
     singular: integration
+    shortNames:
+      - ei
   scope: Namespaced
   subresources:
     status: {}
