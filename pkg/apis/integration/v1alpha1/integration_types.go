@@ -33,8 +33,10 @@ type IntegrationSpec struct {
 	Replicas int32 `json:"replicas"`
 	// Docker image consist of micro integrator runtime and synapse configs
 	Image string `json:"image"`
-	// HTTP traffic serving port of the micro integrator runtime
-	Port int32 `json:"port"`
+	// Docker image credentials if the Image is in private registry
+	ImagePullSecret string `json:"imagePullSecret"`
+	// InboundPorts traffic serving port of the micro integrator runtime
+	InboundPorts []int32 `json:"inboundPorts"`
 	// List of environment variables to set for the integration.
 	Env []corev1.EnvVar `json:"env,omitempty"`
 }
