@@ -17,7 +17,6 @@ The k8s-ei-operator built with operator-sdk v0.7.0 and supported in the followin
 
 ## Install k8s-ei-operator
 
-### Standard mode
 1. Create the folder structure `$GOPATH/src/github.com/wso2` if not available and clone k8s-ei-operator git repo
     ```
     git clone https://github.com/wso2/k8s-ei-operator.git
@@ -43,62 +42,44 @@ The k8s-ei-operator built with operator-sdk v0.7.0 and supported in the followin
     ```
     kubectl create -f deploy/operator.yaml
     ```
-7. Deploy sample integration to start WSO2 micro integrator runtime which having 'User Info' API
+7. Apply configuration for the ingress controller
     ```
-    kubectl apply -f deploy/crds/user_mgt_demo_integration.yaml
-    ```
-8. List the deployed integration
-    ```
-    kubectl get integration
-    ```
-9. Invoke the User Info API once STATUS becomes **Running**
+    kubectl apply -f deploy/config_map.yaml
+    ```    
 
-    i. Port forward
-    ```
-    kubectl port-forward service/user-mgt-demo-integration-service 8290:8290
-    ```
-    ii. Invoke the API
-    ```
-    curl http://localhost:8290/userInfo/users
-    ```
- 
-### Development mode
-1. Check out and install the [operator-sdk CLI](https://github.com/operator-framework/operator-sdk#quick-start)
-2. Install [minikube](https://github.com/kubernetes/minikube#installation) and start Kubernetes cluster
-3. Create the folder structure `$GOPATH/src/github.com/wso2` if not available and clone k8s-ei-operator git repo
-	```
-	git clone https://github.com/wso2/k8s-ei-operator.git
-	```
-4. Change directory to k8s-ei-operator
-	```
-	cd $GOPATH/src/github.com/wso2/wso2/k8s-ei-operator
-	```
-5. Deploy integration CustomResourceDefinition into Kubernetes cluster to understand custom resource type
-	```
-	kubectl create -f deploy/crds/integration_v1alpha1_integration_crd.yaml
-	```
-6. Run the operator code as a Go program outside the Kubernetes cluster
-	```
-	operator-sdk up local
-	```
-7. Deploy sample integration to start WSO2 micro integrator runtime which having 'User Info' API
-	```
-	kubectl apply -f deploy/crds/user_mgt_demo_integration.yaml
-	```
-8. List the deployed integration
-	```
-	kubectl get integration
-	```
-9. Invoke the User Info API once STATUS becomes **Running**
+## Deploy the Integration Solutions with EI Operator
+Deploy sample integration to start WSO2 micro integrator runtime which having 'User Info' API
+```
+kubectl apply -f deploy/crds/user_mgt_demo_integration.yaml
+```
+List the deployed integration
+```
+kubectl get integration
+```
 
-	i. Port forward
-	```
-	kubectl port-forward service/er-mgt-demo-integration-service 8290:8290
-	```
-	ii. Invoke the API
-	```
-	curl http://localhost:8290/services/userInfo/users
-	```
+## Run the Integration Solution
+
+Invoke the User Info API once STATUS becomes **Running** 
+
+### With **Ingress Controller**
+i. HTTP Request
+```
+curl http://wso2/user-mgt-demo-integration-service/userInfo/users
+```
+ii. HTTPS Request
+```
+curl https://wso2/user-mgt-demo-integration-service/userInfo/users -k
+```
+
+### Without **Ingress Controller**
+i. Port forward
+```
+kubectl port-forward service/user-mgt-demo-integration-service 8290:8290
+```
+ii. Invoke the API
+```
+curl http://localhost:8290/userInfo/users
+```
 
 ## Developer Workflow
-![developer-workflow](images/developer-workflow.png)
+![developer-workflow](images/developer_workflow.jpg)
