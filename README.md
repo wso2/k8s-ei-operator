@@ -17,49 +17,49 @@ The k8s-ei-operator built with operator-sdk v0.7.0 and supported in the followin
 
 ## Install k8s-ei-operator
 
-1. Create the folder structure `$GOPATH/src/github.com/wso2` if not available and clone k8s-ei-operator git repo
+1. Create the folder structure `$GOPATH/src/github.com/wso2` if not available and clone k8s-ei-operator git repo:
     ```
     git clone https://github.com/wso2/k8s-ei-operator.git
     ```
-2. Change directory to k8s-ei-operator
+2. Change directory to k8s-ei-operator:
     ```
     cd $GOPATH/src/github.com/wso2/wso2/k8s-ei-operator
     ```
-3. Setup Service Account
+3. Setup Service Account:
     ```
     kubectl create -f deploy/service_account.yaml
     ```
-4. Setup RBAC
+4. Setup RBAC:
     ```
     kubectl create -f deploy/role.yaml
     kubectl create -f deploy/role_binding.yaml
     ```
-5. Deploy integration CustomResourceDefinition into Kubernetes cluster to understand custom resource type
+5. Deploy integration CustomResourceDefinition into Kubernetes cluster to understand custom resource type:
     ```
     kubectl create -f deploy/crds/integration_v1alpha1_integration_crd.yaml
     ```
-6. Deploy the k8s-ei-operator
+6. Deploy the k8s-ei-operator:
     ```
     kubectl create -f deploy/operator.yaml
     ```
-7. Apply configuration for the ingress controller
+7. Apply configuration for the ingress controller:
     ```
     kubectl apply -f deploy/config_map.yaml
     ```    
 
-## Deploy the Integration Solutions with EI Operator
-Deploy sample integration to start WSO2 micro integrator runtime which having 'User Info' API
+## Deploy the integration solutions using the EI Operator
+Deploy a sample integration to start WSO2 Micro Integrator runtime which having 'User Info' API
 ```
 kubectl apply -f deploy/crds/user_mgt_demo_integration.yaml
 ```
-List the deployed integration
+List the deployed integration:
 ```
 kubectl get integration
 ```
 
-## Run the Integration Solution
+## Run the integration solution
 
-Invoke the User Info API once STATUS becomes **Running** 
+Invoke the 'User Info' API once the STATUS changes to **Running** 
 
 ### With **Ingress Controller**
 i. HTTP Request

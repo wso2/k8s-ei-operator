@@ -11,7 +11,7 @@ The k8s-ei-operator is built with operator-sdk v0.7.0 and supported in the follo
 -   [Docker](https://docs.docker.com/)
 
 ## Install EI Operator
-Please do the following steps to intall the EI Kubernetes operator in your Kubernetes environment.
+Please do the following steps to install the EI Kubernetes operator in your Kubernetes environment.
 
 1.  Clone the **k8s-ei-operator** GitHub repository.
     ```bash
@@ -52,7 +52,7 @@ k8s-ei-operator     1/1     1            1          1m
 ```
 
 ## Deploy and Run Integration Solutions with EI Operator
-EI operator supports to deploy and run your integration solutions in Kubernetes environemnt. 
+EI operator supports deployment and running your integration solutions in a Kubernetes environment. 
 
 Here we have demonstrate an example of **HelloWorld** service which response as `{"Hello":"World"}` to the user request. This scenario can be created using `integration_cr.yaml` format as given below.
 
