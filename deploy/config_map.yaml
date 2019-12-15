@@ -21,5 +21,3 @@ metadata:
 data:
   host: wso2ei
   autoIngressCreation: "true" 
-  ingressTLS: wso2-tls
-  sslRedirect: "false"

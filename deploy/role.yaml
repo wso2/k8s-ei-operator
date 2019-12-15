@@ -68,3 +68,17 @@ rules:
   - '*'
   verbs:
   - '*'
+- apiGroups:
+  - "extensions"
+  - ""
+  resources:
+  - ingresses
+  - ingresses/status
+  verbs:
+  - get
+  - update
+  - create
+  - list
+  - patch
+  - delete
+  - watch  
