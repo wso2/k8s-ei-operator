@@ -45,7 +45,9 @@ The k8s-ei-operator built with operator-sdk v0.7.0 and supported in the followin
 7. Apply configuration for the ingress controller:
     ```
     kubectl apply -f deploy/config_map.yaml
-    ```    
+    ```
+8. Add the host `wso2ei` and related external IP (ADDRESS) to the `/etc/hosts` file in your machine.
+   (For Minikube, you have to use Minikube IP as the external IP. Hence, run `minikube ip` command to get the IP of the Minikube cluster)        
 
 ## Deploy the integration solutions using the EI Operator
 Deploy a sample integration to start WSO2 Micro Integrator runtime which having 'User Info' API
@@ -64,11 +66,11 @@ Invoke the 'User Info' API once the STATUS changes to **Running**
 ### With **Ingress Controller**
 i. HTTP Request
 ```
-curl http://wso2/user-mgt-demo-integration-service/userInfo/users
+curl http://wso2ei/user-mgt-demo-integration-service/userInfo/users
 ```
 ii. HTTPS Request
 ```
-curl https://wso2/user-mgt-demo-integration-service/userInfo/users -k
+curl https://wso2ei/user-mgt-demo-integration-service/userInfo/users -k
 ```
 
 ### Without **Ingress Controller**
