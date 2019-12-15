@@ -1,0 +1,25 @@
+[server]
+hostname = "localhost"
+
+[keystore.tls]
+file_name = "wso2carbon.jks"
+password = "wso2carbon"
+alias = "wso2carbon"
+key_password = "wso2carbon"
+
+[truststore]
+file_name = "client-truststore.jks"
+password = "wso2carbon"
+alias = "symmetric.key.value"
+algorithm = "AES"
+
+[[transport.jms.listener]]
+name = "default"
+parameter.initial_naming_factory = "org.apache.activemq.jndi.ActiveMQInitialContextFactory"
+parameter.provider_url = "tcp://k8s-activemq-service.default.svc.cluster.local:61616"
+parameter.connection_factory_name = "QueueConnectionFactory"
+parameter.connection_factory_type = "queue"
+
+[[custom_transport.sender]]
+protocol = "jms"
+class="org.apache.axis2.transport.jms.JMSSender"

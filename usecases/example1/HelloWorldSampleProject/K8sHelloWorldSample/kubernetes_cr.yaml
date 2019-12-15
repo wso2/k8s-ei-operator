@@ -1,0 +1,9 @@
+---
+apiVersion: "integration.wso2.com/v1alpha1"
+kind: "Integration"
+metadata:
+  name: "hello-world"
+spec:
+  replicas: 1
+  image: "sajithaliyanage/k8s-samples:hello-world-1.0"
+  port: 8290

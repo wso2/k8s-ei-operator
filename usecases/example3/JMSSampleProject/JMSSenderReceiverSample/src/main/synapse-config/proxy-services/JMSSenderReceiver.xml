@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<proxy name="JmsSenderListner" startOnLoad="true" transports="jms" xmlns="http://ws.apache.org/ns/synapse">
+    <target>
+        <inSequence>
+            <send>
+                <endpoint>
+                    <address uri="jms:/secondQueue?transport.jms.ConnectionFactoryJNDIName=QueueConnectionFactory&amp;java.naming.factory.initial=org.apache.activemq.jndi.ActiveMQInitialContextFactory&amp;java.naming.provider.url=failover:(tcp://k8s-activemq-service.default.svc.cluster.local:61616,tcp://k8s-activemq-service.default.svc.cluster.local:61617)?randomize=false&amp;transport.jms.DestinationType=queue">
+                        <suspendOnFailure>
+                            <initialDuration>-1</initialDuration>
+                            <progressionFactor>-1</progressionFactor>
+                            <maximumDuration>0</maximumDuration>
+                        </suspendOnFailure>
+                        <markForSuspension>
+                            <retriesBeforeSuspension>0</retriesBeforeSuspension>
+                        </markForSuspension>
+                    </address>
+                </endpoint>
+            </send>
+        </inSequence>
+        <outSequence/>
+        <faultSequence/>
+    </target>
+    <parameter name="transport.jms.SessionAcknowledgement">AUTO_ACKNOWLEDGE</parameter>
+    <parameter name="transport.jms.Destination">$SYSTEM:destination</parameter>
+    <parameter name="transport.jms.ConnectionFactoryType">firstQueue</parameter>
+    <parameter name="transport.jms.ContentType">$SYSTEM:contenttype</parameter>
+    <parameter name="java.naming.provider.url">$SYSTEM:jmsurl</parameter>
+    <parameter name="transport.jms.SessionTransacted">false</parameter>
+    <parameter name="transport.jms.ConnectionFactoryJNDIName">$SYSTEM:jmsconfac</parameter>
+    <parameter name="transport.jms.UserName">$SYSTEM:jmsuname</parameter>
+    <parameter name="transport.jms.Password">$SYSTEM:jmspass</parameter>
+</proxy>
